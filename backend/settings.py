@@ -81,4 +81,4 @@ EMAIL_HOST_PASSWORD = 'ngyj hove cjsc penw'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Where contact form messages go (TO)
-CONTACT_RECEIVER_EMAIL = 'yourgmail@gmail.com'
+CONTACT_RECEIVER_EMAIL = 'akila271819@gmail.com'
