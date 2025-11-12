@@ -1,0 +1,88 @@
+{% extends 'registration/base.html' %}
+{% block title %}Contact Us — Vetri Finance{% endblock %}
+
+{% block content %}
+<section class="container mx-auto py-16 px-6">
+  <h1 class="text-4xl font-extrabold text-center text-purple-700 mb-8">Get in Touch</h1>
+  <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+    Have a question, feedback, or just want to say hello? Fill out the form below, and we’ll get back to you soon 💬.
+  </p>
+
+  <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition">
+    {% if messages %}
+      <div class="text-center mb-6">
+        {% for msg in messages %}
+          <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg inline-block">
+            {{ msg }}
+          </div>
+          
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'contact' %}" id="contactForm">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label for="name" class="block text-gray-700 font-medium mb-2">Full Name</label>
+        <input type="text" id="name" name="name" required
+          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400">
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+        <input type="email" id="email" name="email" required
+          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400">
+      </div>
+
+      <div class="mb-4">
+        <label for="message" class="block text-gray-700 font-medium mb-2">Your Message</label>
+        <textarea id="message" name="message" rows="5" required
+          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400"></textarea>
+      </div>
+
+      <div class="text-center">
+        <button type="submit"
+          class="bg-primary text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition">
+          Send Message ✉️
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+document.getElementById("contactForm").addEventListener("submit", function (e) {
+  const name = document.getElementById("name");
+  const email = document.getElementById("email");
+  const message = document.getElementById("message");
+  let valid = true;
+
+  document.querySelectorAll(".error-text").forEach(el => el.remove());
+
+  function showError(input, msg) {
+    const error = document.createElement("p");
+    error.textContent = msg;
+    error.className = "error-text text-red-600 text-sm mt-1";
+    input.insertAdjacentElement("afterend", error);
+    valid = false;
+  }
+
+  if (name.value.trim().length < 3)
+    showError(name, "Please enter your full name (min 3 characters).");
+
+  const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+  if (!emailPattern.test(email.value))
+    showError(email, "Please enter a valid email address.");
+
+  if (message.value.trim().length < 10)
+    showError(message, "Message must be at least 10 characters long.");
+
+  if (!valid) e.preventDefault();
+});
+
+setTimeout(() => {
+  const msgBox = document.querySelector(".bg-green-100, .bg-red-100");
+  if (msgBox) msgBox.style.display = "none";
+}, 4000);
+</script>
+{% endblock %}

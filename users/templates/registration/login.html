@@ -1,0 +1,26 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}Login — Vetri Finance{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-[80vh]">
+  <div class="login-card bg-white/70 backdrop-blur-xl border border-purple-300 shadow-2xl rounded-3xl p-8 w-full max-w-md text-center">
+    <h2 class="text-3xl font-bold mb-3 text-purple-700">💰 Vetri Finance</h2>
+    <p class="text-gray-600 mb-6 text-sm">Ride the wave of smart finances</p>
+
+    <!-- ✅ Login Form -->
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="w-full py-3 mt-4 bg-gradient-to-r from-purple-700 to-purple-500 text-white font-semibold rounded-xl shadow-md hover:scale-[1.02] transition-transform">
+        🔐 Login
+      </button>
+    </form>
+
+    <p class="mt-5 text-sm text-gray-700">
+      Don’t have an account? <a href="{% url 'register' %}" class="text-purple-600 hover:underline">Register</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

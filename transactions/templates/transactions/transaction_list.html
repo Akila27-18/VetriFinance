@@ -1,0 +1,174 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}Transactions — Vetri Finance{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto py-12 px-6 text-black">
+  <h2 class="text-4xl font-extrabold text-center text-yellow-200 mb-10 drop-shadow-lg">
+    💼 Your Transactions
+  </h2>
+
+  <!-- FILTER FORM -->
+  <form method="get"
+        class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 bg-gradient-to-br from-indigo-500/40 via-purple-600/30 to-blue-500/30 backdrop-blur-xl p-6 rounded-3xl border border-purple-400/40 shadow-2xl">
+    <div>
+      <label class="block font-semibold text-black mb-2">Type</label>
+      <select name="type"
+              class="w-full bg-black/10 text-black border border-purple-300 rounded-xl p-2 focus:ring-2 focus:ring-yellow-300 focus:outline-none">
+        <option value="">All</option>
+        <option value="income" {% if selected_type == 'income' %}selected{% endif %}>Income</option>
+        <option value="expense" {% if selected_type == 'expense' %}selected{% endif %}>Expense</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block font-semibold text-black mb-2">Start Date</label>
+      <input type="date" name="start_date" value="{{ start_date }}"
+             class="w-full bg-white/10 text-black border border-purple-300 rounded-xl p-2 focus:ring-2 focus:ring-yellow-300 focus:outline-none">
+    </div>
+
+    <div>
+      <label class="block font-semibold text-black mb-2">End Date</label>
+      <input type="date" name="end_date" value="{{ end_date }}"
+             class="w-full bg-white/10 text-black border border-purple-300 rounded-xl p-2 focus:ring-2 focus:ring-yellow-300 focus:outline-none">
+    </div>
+
+    <div class="flex items-end">
+      <button class="w-full py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-gray-900 font-semibold rounded-xl hover:scale-105 transition">
+        🔍 Filter
+      </button>
+    </div>
+  </form>
+
+  <!-- LIVE SEARCH -->
+  <div class="mb-6 flex justify-between items-center">
+    <input id="searchInput" type="text"
+           placeholder="🔎 Search transactions..."
+           class="w-full md:w-1/3 bg-white/20 text-black border border-purple-400 rounded-xl px-4 py-2 focus:ring-2 focus:ring-yellow-300 focus:outline-none placeholder-gray-700">
+  </div>
+
+  <!-- TRANSACTION TABLE -->
+  <div class="overflow-x-auto bg-gradient-to-br from-indigo-600/30 via-purple-600/30 to-blue-600/30 backdrop-blur-xl rounded-3xl border border-purple-300/50 shadow-2xl">
+    <table id="transactionTable" class="w-full text-sm text-black">
+      <thead class="bg-purple-900/60 text-black">
+        <tr>
+          <th class="py-3 px-4 text-left">Title</th>
+          <th class="py-3 px-4">Amount</th>
+          <th class="py-3 px-4">Type</th>
+          <th class="py-3 px-4">Date</th>
+          <th class="py-3 px-4">Notes</th>
+          <th class="py-3 px-4 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-purple-500/40">
+        {% for t in transactions %}
+        <tr class="hover:bg-purple-800/40 transition">
+          <td class="py-3 px-4 font-medium">{{ t.title }}</td>
+          <td class="py-3 px-4 font-semibold {% if t.type == 'income' %}text-green-600{% else %}text-red-600{% endif %}">
+            ₹{{ t.amount }}
+          </td>
+          <td class="py-3 px-4 capitalize">
+            {% if t.type == 'income' %}
+              <span class="bg-green-600/40 text-green px-2 py-1 rounded-lg text-xs">Income</span>
+            {% else %}
+              <span class="bg-red-600/40 text-red px-2 py-1 rounded-lg text-xs">Expense</span>
+            {% endif %}
+          </td>
+          <td class="py-3 px-4">{{ t.date }}</td>
+          <td class="py-3 px-4 text-black">{{ t.notes|default:"—" }}</td>
+          <td class="py-3 px-4 text-center flex justify-center gap-3">
+            <a href="{% url 'edit_transaction' t.pk %}"
+               class="bg-green-500 hover:bg-green-600 text-black text-xs px-4 py-1.5 rounded-lg font-semibold transition-all shadow-md">✏️ Edit</a>
+            <a href="{% url 'delete_transaction' t.pk %}"
+               class="bg-red-500 hover:bg-red-600 text-black text-xs px-4 py-1.5 rounded-lg font-semibold transition-all shadow-md">❌ Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="py-6 text-center text-gray-500 italic">No transactions found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="flex justify-center items-center mt-8 gap-4">
+    <button id="prevPage"
+            class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-800 disabled:opacity-50 transition">
+      ⬅ Prev
+    </button>
+    <span id="pageInfo" class="text-yellow-500 font-semibold"></span>
+    <button id="nextPage"
+            class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-800 disabled:opacity-50 transition">
+      Next ➡
+    </button>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="text-center mt-12 space-x-4">
+    <a href="{% url 'add_transaction' %}"
+       class="px-6 py-3 bg-blue-700 text-white rounded-full font-semibold hover:scale-105 transition shadow-md">
+      ➕ Add New
+    </a>
+    <a href="{% url 'export_csv' %}"
+       class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full font-semibold hover:scale-105 transition shadow-md">
+      📤 Export CSV
+    </a>
+    <a href="{% url 'export_pdf' %}"
+       class="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full font-semibold hover:scale-105 transition shadow-md">
+      📄 Export PDF
+    </a>
+    <a href="{% url 'dashboard_home' %}"
+       class="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full font-semibold hover:scale-105 transition shadow-md">
+      ⬅ Back to Dashboard
+    </a>
+  </div>
+</section>
+
+<!-- JAVASCRIPT: Client-side Search + Pagination -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const rows = Array.from(document.querySelectorAll('#transactionTable tbody tr'));
+  const searchInput = document.getElementById('searchInput');
+  const prevBtn = document.getElementById('prevPage');
+  const nextBtn = document.getElementById('nextPage');
+  const pageInfo = document.getElementById('pageInfo');
+
+  const rowsPerPage = 10;
+  let currentPage = 1;
+  let filteredRows = rows;
+
+  function renderTable() {
+    rows.forEach(r => r.style.display = 'none');
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    filteredRows.slice(start, end).forEach(r => r.style.display = '');
+    const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages || 1}`;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage >= totalPages;
+  }
+
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.toLowerCase();
+    filteredRows = rows.filter(r => r.textContent.toLowerCase().includes(term));
+    currentPage = 1;
+    renderTable();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) { currentPage--; renderTable(); }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
+      currentPage++; renderTable();
+    }
+  });
+
+  renderTable();
+});
+</script>
+{% endblock %}

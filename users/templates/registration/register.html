@@ -1,0 +1,25 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}Register — Vetri Finance{% endblock %}
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-white via-purple-100 to-purple-50 py-12">
+  <div class="bg-white/70 backdrop-blur-lg border border-purple-300 shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
+    <h2 class="text-3xl font-bold text-purple-700 mb-3">🚀 Join Vetri Finance</h2>
+    <p class="text-gray-600 mb-6">Start managing your finances smartly today!</p>
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-purple-700 to-purple-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-800 hover:to-purple-600 transition">
+        📝 Create Account
+      </button>
+    </form>
+
+    <p class="text-gray-600 mt-4">
+      Already have an account?
+      <a href="{% url 'login' %}" class="text-purple-600 font-semibold hover:underline">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

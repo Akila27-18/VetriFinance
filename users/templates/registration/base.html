@@ -1,0 +1,319 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Vetri Finance — Smart Financial Insights{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #eef2ff, #ede9fe, #dbeafe);
+      background-attachment: fixed;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    main {
+      flex: 1;
+      padding: 60px 20px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    /* === NAVBAR Aurora Gradient === */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 14px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      overflow: hidden;
+      /* border-radius: 0 0 30px 30px; */
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      background: linear-gradient(120deg, #6366f1, #8b5cf6, #3b82f6);
+      background-size: 300% 300%;
+      animation: auroraMove 10s ease infinite;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+    }
+
+    nav::before {
+      content: "";
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle at center, rgba(192,132,252,0.4), transparent 70%);
+      filter: blur(100px);
+      z-index: 0;
+      animation: floatOrb 12s ease-in-out infinite;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      width: 55px;
+    }
+
+    .nav-icon {
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-item:hover .nav-icon {
+      background: rgba(255,255,255,0.25);
+      box-shadow: 0 0 15px rgba(255,255,255,0.4);
+      transform: translateY(-3px) scale(1.1);
+    }
+
+    .nav-item span {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+
+    /* === FOOTER Aurora Gradient === */
+    footer {
+      position: relative;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(120deg, #6366f1, #8b5cf6, #3b82f6);
+      background-size: 300% 300%;
+      animation: auroraMove 12s ease infinite;
+      color: #f3f4f6;
+      padding: 60px 20px 40px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      overflow: hidden;
+      /* border-radius: 30px 30px 0 0; */
+    }
+
+    footer::before {
+      content: "";
+      position: absolute;
+      bottom: -120px;
+      right: -120px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle at center, rgba(147,197,253,0.4), transparent 70%);
+      filter: blur(100px);
+      animation: floatOrb 14s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    footer h3 {
+      color: white;
+      font-weight: 600;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    footer a {
+      text-decoration: none;
+      color: #e0e7ff;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    footer a:hover {
+      color: white;
+      text-shadow: 0 0 8px rgba(255,255,255,0.6);
+    }
+
+    /* === Animations === */
+    @keyframes auroraMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+      50% { transform: translateY(-20px) scale(1.05); opacity: 0.5; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === MOBILE MENU === */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      width: 28px;
+      height: 20px;
+      justify-content: space-between;
+      position: relative;
+      z-index: 3;
+    }
+
+    .bar {
+      height: 3px;
+      width: 100%;
+      background-color: white;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active .bar:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger.active .bar:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    @media (max-width: 850px) {
+      .nav-links {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: rgba(17, 24, 39, 0.95);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        gap: 25px;
+        padding: 25px 0;
+        transform: translateY(-120%);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.4s ease;
+      }
+
+      .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .hamburger { display: flex; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="flex items-center justify-between w-full">
+      <div class="hamburger" id="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+
+    <div class="nav-links" id="nav-links">
+      {% if user.is_authenticated %}
+        <a href="{% url 'front_page' %}" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+        <a href="{% url 'about' %}" class="nav-item"><div class="nav-icon">ℹ️</div><span>About</span></a>
+        <a href="{% url 'dashboard_home' %}" class="nav-item"><div class="nav-icon">📊</div><span>Dashboard</span></a>
+        <a href="{% url 'transaction_list' %}" class="nav-item"><div class="nav-icon">💰</div><span>Transactions</span></a>
+        <a href="{% url 'contact' %}" class="nav-item"><div class="nav-icon">📞</div><span>Contact</span></a>
+        <a href="{% url 'faq' %}" class="nav-item"><div class="nav-icon">❓</div><span>Help</span></a>
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="nav-item" style="background:none;border:none;padding:0;cursor:pointer;">
+            <div class="nav-icon">🚪</div><span>Logout</span>
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'front_page' %}" class="nav-item"><div class="nav-icon">🏠</div><span>Home</span></a>
+        <a href="{% url 'about' %}" class="nav-item"><div class="nav-icon">ℹ️</div><span>About</span></a>
+        <a href="{% url 'contact' %}" class="nav-item"><div class="nav-icon">📞</div><span>Contact</span></a>
+        <a href="{% url 'faq' %}" class="nav-item"><div class="nav-icon">❓</div><span>Help</span></a>
+        <a href="{% url 'login' %}" class="nav-item"><div class="nav-icon">🔐</div><span>Login</span></a>
+        <a href="{% url 'register' %}" class="nav-item"><div class="nav-icon">📝</div><span>Register</span></a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="container mx-auto">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 text-sm relative z-2">
+      <div>
+        <h3>Vetri Finance</h3>
+        <p>Vetri Finance provides real-time analytics and smart insights for your financial growth.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul class="space-y-1">
+          <li><a href="{% url 'front_page' %}">Home</a></li>
+          <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+          <li><a href="{% url 'faq' %}">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Legal</h3>
+        <ul class="space-y-1">
+          <li><a href="{% url 'terms_conditions' %}">Terms & Conditions</a></li>
+          <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+          <li><a href="{% url 'cookie_policy' %}">Cookie Policy</a></li>
+          <li><a href="{% url 'disclaimer' %}">Disclaimer</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <ul class="space-y-1">
+          <li>📧 support@vetrifinance.com</li>
+          <li>📞 +91 98765 43210</li>
+          <li>📍 Chennai, India</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-600 mt-8 pt-4 text-xs text-gray-300 text-center relative z-2">
+      © {{ now|date:"Y" }} Vetri Finance. Built with ❤️ by Akila.
+    </div>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
