@@ -1,0 +1,1 @@
+Add images (bg-hero.jpg) and icons in this folder.

@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --orange: #FF6A00;
+  --bg: #FFFFFF;
+  --muted: #6B7280;
+}
+
+html, body, #root { height: 100%; }
+body {
+  background: var(--bg);
+  font-family: 'Poppins', 'Inter', sans-serif;
+  color: #111827;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-sm p-4;
+}
